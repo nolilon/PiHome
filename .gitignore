@@ -3,3 +3,7 @@ bin/
 release/
 debug/
 
+.qmake.stash
+Makefile
+Makefile.Debug
+Makefile.Release
