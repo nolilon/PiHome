@@ -1,6 +1,7 @@
 #include "telegramobjects.h"
 
 #include <QJsonObject>
+#include <QDebug>
 
 
 TelegramMessage::TelegramMessage(QString text)
@@ -79,7 +80,7 @@ void TelegramInlineKeyboard::checkReply(const QJsonObject &callback_query)
 
     if ( value.isUndefined() )
     {
-        qDebug() << "Callback data undefined!";
+//        qDebug() << "Callback data undefined!";
         return;
     }
 
