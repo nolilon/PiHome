@@ -23,7 +23,9 @@ HEADERS += \
     src/isensor.h \
     src/iview.h \
     src/mainlogic.h \
+    src/ports.h \
     src/remotewethersensors.h \
+    src/tcpconnection.h \
     src/telegrambot.h \
     src/telegramobjects.h \
     src/view.h
@@ -33,6 +35,7 @@ SOURCES += \
         src/main.cpp \
         src/mainlogic.cpp \
         src/remotewethersensors.cpp \
+        src/tcpconnection.cpp \
         src/telegrambot.cpp \
         src/telegramobjects.cpp \
         src/view.cpp
