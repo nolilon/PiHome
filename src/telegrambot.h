@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <queue>
+#include <QTimer>
 
 class TelegramController;
 class TelegramObject;
@@ -14,7 +15,6 @@ public:
     explicit TelegramBot(Internet &internet);
     void subscribeOnReply(TelegramController *controller);
 
-    void loop();
 
     void sendMesage(const TelegramObject &object);
     void updateMessage(const TelegramObject &object);
@@ -27,16 +27,19 @@ private:
 
     TelegramController *_controller = nullptr;
 
+    void requestDone();
+
     long _lastUpdateId = 0;
 
     std::queue<QString> _importantRequestsQueue;
     bool _importantRequest = false;
-    bool importantRequestInProgress() const;
     bool importantRequestDone() const;
     bool updateReceived() const;
 
     void sendImportantRequest();
     void sendUpdatesRequest();
+    QTimer _getUpdatesDelay;
+    void delayedGetUpdates();
 };
 
 
