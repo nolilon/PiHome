@@ -7,16 +7,9 @@ MainLogic::MainLogic(Sensor &temperatureSensor, Sensor &humiditySensor)
     : _temperatureSensor(temperatureSensor),
       _humiditySensor(humiditySensor)
 {
-    _updateTimer.setInterval(120000);
+    _updateTimer.setInterval(600000);
     _updateTimer.start();
-}
-
-void MainLogic::loop()
-{
-   if ( _updateTimer.remainingTime() == 0 ) _view->modelUpdated();
-
-//    if (smthg bad)
-//        _view ->alarm("!ALARM!");
+    QObject::connect( &_updateTimer, &QTimer::timeout, [this] () {this->_view->modelUpdated();} );
 }
 
 State MainLogic::currentState()
