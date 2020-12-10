@@ -20,14 +20,15 @@ View::View(Model &model, TelegramBot &bot)
 {
     _model.setView(this);
     _telegramBot.subscribeOnReply(this);
+
+    _updateDelay.setSingleShot(true);
+    _updateDelay.setInterval(10);
+    QObject::connect( &_updateDelay, &QTimer::timeout, [this] () {this->update();} );
+    _updateDelay.start();
 }
 
-void View::loop()
+void View::update()
 {
-    _telegramBot.loop();
-
-    if ( !_needUpdate ) return;
-
     auto state = _model.currentState();
 
     auto currentDateTime = QDateTime::currentDateTime().toString("d MMMM yyyy, h:mm ap");
@@ -38,13 +39,11 @@ void View::loop()
 
     TelegramComplexMessage message( textMessage, _keyboard );
     _telegramBot.updateMessage(message);
-
-    _needUpdate = false;
 }
 
 void View::modelUpdated()
 {
-    _needUpdate = true;
+    _updateDelay.start();
 }
 
 void View::alarm(QString message)
@@ -56,8 +55,10 @@ void View::alarm(QString message)
 //------------- CONTROLLER --------------//
 int View::acceptReply(const QString &reply)
 {
-    QElapsedTimer timer;
-    timer.start();
+//    QElapsedTimer timer;
+//    timer.start();
+//    long long elapsed = 0;
+
     long lastUpdateId = 0;
     auto json = QJsonDocument::fromJson( reply.toUtf8() ); //the most long operation, ~100mksec
     auto updateList = json["result"].toArray();
@@ -73,6 +74,7 @@ int View::acceptReply(const QString &reply)
         _telegramBot.answerCallbackQuery(callbackQueryId);
         lastUpdateId = update_id;
     }
-    qDebug() << "Answer takes " << timer.nsecsElapsed() << "\n";
+//    elapsed = timer.nsecsElapsed();
+//    qDebug() << "Answer takes " << elapsed << "\n";
     return lastUpdateId;
 }
