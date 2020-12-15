@@ -16,12 +16,19 @@ TcpConnection::TcpConnection(quint16 port, OnMessageCallback callback)
     else qDebug() << "Port not opened!!";
 }
 
+void TcpConnection::send(char *data, int size)
+{
+    if ( _client == nullptr ) return;
+    _client->write(data,size);
+}
+
 void TcpConnection::clientConnecting()
 {
     auto client = _tcpServer->nextPendingConnection();
     if ( _client != nullptr ) delete _client;
     _client = client;
     QObject::connect( _client, &QTcpSocket::readyRead, [this]() {this->readMessage();} );
+    qDebug() << "Client connected on " << _client->peerPort() << " port";
 }
 
 void TcpConnection::readMessage()
