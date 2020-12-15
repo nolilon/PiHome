@@ -16,7 +16,9 @@ void InternetPc::get(QString url)
     auto encodedUrl = QUrl( url );
     _replyObj = _internet.get(QNetworkRequest(encodedUrl));
     QObject::connect( _replyObj, &QNetworkReply::finished, [this] () {this->requestDone();} );
-//    qDebug() << "Get request sent:\n" << url;
+#ifdef QT_DEBUG
+    qDebug() << "Get request sent:\n" << url;
+#endif
 }
 
 void InternetPc::requestDone()
@@ -25,10 +27,12 @@ void InternetPc::requestDone()
     _replyObj->deleteLater();
     _replyObj = nullptr;
 
-    _onReply();
+#ifdef QT_DEBUG
+    if (_replyStr.length() > 0)
+        qDebug() << "Answer: \n" << _replyStr;
+#endif
 
-//    if (_replyStr.length() > 0)
-//        qDebug() << _replyStr;
+    _onReply();
 }
 
 void InternetPc::setOnReply(Callback callback)
