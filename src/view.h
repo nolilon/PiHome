@@ -20,6 +20,7 @@ private:
     Model &_model;
     TelegramBot &_telegramBot;
 
+    QString const chat_id = "420638906";
     TelegramInlineKeyboard _keyboard;
 
     TelegramInlineButton *const _temperatureButton;

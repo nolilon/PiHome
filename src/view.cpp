@@ -32,7 +32,7 @@ void View::update()
     auto state = _model.currentState();
 
     auto currentDateTime = QDateTime::currentDateTime().toString("d MMMM yyyy, h:mm ap");
-    TelegramMessage textMessage("All is OK\n" + currentDateTime);
+    TelegramMessage textMessage("All is OK\n" + currentDateTime, chat_id);
 
     _temperatureButton->updateText( QString::asprintf("   Temperature:       %.1f   ", state.temperature) );
     _humidityButton->updateText(    QString::asprintf("   Humidity:             %.1f   ", state.humidity) );
@@ -66,12 +66,24 @@ int View::acceptReply(const QString &reply)
     for (const QJsonValue &update : updateList)
     {
         auto update_id = update["update_id"].toInt(0);
+        auto updateJson = update.toObject();
 
-        auto callback_query = update["callback_query"].toObject();
-        _keyboard.checkReply( callback_query );
+        if ( updateJson.contains("callback_query") )
+        {
+            auto callback_query = update["callback_query"].toObject();
+            _keyboard.checkReply( callback_query );
 
-        auto callbackQueryId = callback_query["id"].toString();
-        _telegramBot.answerCallbackQuery(callbackQueryId);
+            auto callbackQueryId = callback_query["id"].toString();
+            _telegramBot.answerCallbackQuery(callbackQueryId);
+        }
+        else if ( updateJson.contains("message") )
+        {
+            auto message = updateJson["message"].toObject();
+            auto messageId = message["message_id"].toInt();
+            auto chatId = message["chat"].toObject()["id"].toInt();
+            _telegramBot.deleteMessage(chatId, messageId);
+        }
+
         lastUpdateId = update_id;
     }
 //    elapsed = timer.nsecsElapsed();
