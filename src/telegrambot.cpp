@@ -45,7 +45,11 @@ void TelegramBot::updateMessage(const TelegramObject &object)
 void TelegramBot::deleteMessage(int chat_id, int message_id)
 {
     const QString method = "/deleteMessage?";
-    _importantRequestsQueue.push( _botApiUrl + _token + method + "chat_id=" + chat_id + "&message_id=" + message_id );
+    _importantRequestsQueue.push( _botApiUrl +
+                                  _token +
+                                  method +
+                                  "chat_id=" + QString::number(chat_id) +
+                                  "&message_id=" + QString::number(message_id ) );
     sendImportantRequest();
 }
 
