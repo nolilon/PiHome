@@ -42,6 +42,13 @@ void TelegramBot::updateMessage(const TelegramObject &object)
     sendImportantRequest();
 }
 
+void TelegramBot::deleteMessage(int chat_id, int message_id)
+{
+    const QString method = "/deleteMessage?";
+    _importantRequestsQueue.push( _botApiUrl + _token + method + "chat_id=" + chat_id + "&message_id=" + message_id );
+    sendImportantRequest();
+}
+
 void TelegramBot::sendMesage(const TelegramObject &object)
 {
     const QString method = "/sendMessage?";
@@ -80,6 +87,6 @@ void TelegramBot::delayedGetUpdates()
 {
     if ( _importantRequest ) return;
 
-    QString method = "/getUpdates?timeout=300&allowed_updates=[\"callback_query\"]&offset=" + QString::number(_lastUpdateId+1);
+    QString method = "/getUpdates?timeout=300&offset=" + QString::number(_lastUpdateId+1); //&allowed_updates=[\"callback_query\"]
     _internet.get(_botApiUrl + _token + method);
 }
