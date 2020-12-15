@@ -5,6 +5,7 @@
 #include "view.h"
 #include "ports.h"
 #include <QCoreApplication>
+#include "remotealarm.h"
 
 
 int main(int argc, char **argv)
@@ -14,6 +15,7 @@ int main(int argc, char **argv)
     InternetPc internet;
 
     RemoteWeatherSensors weather(wetherPort);
+    RemoteAlarm alarm(alarmPort);
 
     TelegramBot bot(internet);
 
