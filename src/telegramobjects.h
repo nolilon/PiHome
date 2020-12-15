@@ -29,13 +29,12 @@ public:
 class TelegramMessage : public TelegramObject
 {
 public:
-    explicit TelegramMessage(QString text); //CRUTCH
     TelegramMessage(QString text, QString chatId);
     QString json() const override;
 
 private:
     const QString _text;
-    const QString _chat_id = "420638906"; //CRUTCH
+    const QString _chat_id;
 };
 
 

@@ -4,9 +4,6 @@
 #include <QDebug>
 
 
-TelegramMessage::TelegramMessage(QString text)
-    : _text(text)
-{}
 
 TelegramMessage::TelegramMessage(QString text, QString chatId)
     : _text(text),
@@ -92,13 +89,3 @@ TelegramInlineKeyboard::~TelegramInlineKeyboard()
 {
     for (auto button : _buttons) delete button;
 }
-
-
-//TelegramReplyButton::TelegramReplyButton(QString text)
-//    : _text(text)
-//{}
-
-//QString TelegramReplyButton::json() const
-//{
-//    return "{\"text\":\"" + _text + "\",\"request_poll\":{\"type\":\"regular\"}}"; //fix optional data
-//}
