@@ -2,7 +2,7 @@
 
 RemoteAlarm::RemoteAlarm(unsigned short port)
     : _connection(port, [this] (char *data, int size) {this->messageReceived(data,size);} ),
-      _startTime(22,58)
+      _startTime(8,45)
 {
     _timer.setInterval(5000);
     QObject::connect( &_timer, &QTimer::timeout, [this] () {this->timeCheck();} );
