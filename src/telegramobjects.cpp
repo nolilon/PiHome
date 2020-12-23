@@ -81,7 +81,7 @@ void TelegramInlineKeyboard::checkReply(const QJsonObject &callback_query)
         return;
     }
 
-    int callBackData = value.toInt();
+    int callBackData = value.toString().toInt();
     _buttons.at(callBackData)->doCallback();
 }
 
