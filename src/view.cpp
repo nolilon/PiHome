@@ -16,7 +16,8 @@ View::View(Model &model, TelegramBot &bot)
     : _model(model),
       _telegramBot(bot),
       _temperatureButton( _keyboard.createButton( std::bind(&Model::tempOrHumidPressed, &_model) ) ),
-      _humidityButton( _keyboard.createButton( std::bind(&Model::tempOrHumidPressed, &_model) ) )
+      _humidityButton( _keyboard.createButton( std::bind(&Model::tempOrHumidPressed, &_model) ) ),
+      _lightButton( _keyboard.createButton( std::bind(&Model::toggleLight, &_model) ) )
 {
     _model.setView(this);
     _telegramBot.subscribeOnReply(this);
@@ -32,10 +33,15 @@ void View::update()
     auto state = _model.currentState();
 
     auto currentDateTime = QDateTime::currentDateTime().toString("d MMMM yyyy, h:mm ap");
-    TelegramMessage textMessage("All is OK\n" + currentDateTime, chat_id);
+    TelegramMessage textMessage("Last update:\n" + currentDateTime, chat_id);
 
     _temperatureButton->updateText( QString::asprintf("   Temperature:       %.1f   ", state.temperature) );
     _humidityButton->updateText(    QString::asprintf("   Humidity:             %.1f   ", state.humidity) );
+
+    QString lightState;
+    if (state.lightIsOn) lightState = "On";
+    else lightState = "Off";
+    _lightButton->updateText( QString("   Light:             %1   ").arg(lightState) );
 
     TelegramComplexMessage message( textMessage, _keyboard );
     _telegramBot.updateMessage(message);
