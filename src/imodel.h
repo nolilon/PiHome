@@ -7,6 +7,7 @@ struct State
 {
     double temperature = 101;
     double humidity = 101;
+    bool lightIsOn = false;
 };
 
 
@@ -16,6 +17,7 @@ public:
     virtual State currentState() = 0;
 
     virtual void tempOrHumidPressed() = 0;
+    virtual void toggleLight() = 0;
 
     virtual ~Model() {}
 

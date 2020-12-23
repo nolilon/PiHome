@@ -1,11 +1,13 @@
 #include "mainlogic.h"
 
 #include "isensor.h"
+#include "device.h"
 
 
-MainLogic::MainLogic(Sensor &temperatureSensor, Sensor &humiditySensor)
-    : _temperatureSensor(temperatureSensor),
-      _humiditySensor(humiditySensor)
+MainLogic::MainLogic(Sensor *temperatureSensor, Sensor *humiditySensor, Device *light)
+    : _temperatureSensor(*temperatureSensor),
+      _humiditySensor(*humiditySensor),
+      _light(*light)
 {
     _updateTimer.setInterval(600000);
     _updateTimer.start();
@@ -19,10 +21,17 @@ State MainLogic::currentState()
     State result;
     result.temperature = _temperatureSensor.value();
     result.humidity = _humiditySensor.value();
+    result.lightIsOn = _light.isOn();
     return result;
 }
 
 void MainLogic::tempOrHumidPressed()
 {
+    _view->modelUpdated();
+}
+
+void MainLogic::toggleLight()
+{
+    _light.toggle();
     _view->modelUpdated();
 }

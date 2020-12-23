@@ -1,11 +1,13 @@
 #include "internet.h"
 #include "telegrambot.h"
-#include "remotewethersensors.h"
 #include "mainlogic.h"
 #include "view.h"
 #include "ports.h"
 #include <QCoreApplication>
+
+#include "remotewethersensors.h"
 #include "remotealarm.h"
+#include "remotelight.h"
 
 
 int main(int argc, char **argv)
@@ -16,10 +18,13 @@ int main(int argc, char **argv)
 
     RemoteWeatherSensors weather(wetherPort);
     RemoteAlarm alarm(alarmPort);
+    RemoteLight light(lightPort);
 
     TelegramBot bot(internet);
 
-    MainLogic logic(*(weather.tempSensor()), *(weather.humidSensor()));
+    MainLogic logic(weather.tempSensor(),
+                    weather.humidSensor(),
+                    &light);
     View view(logic, bot);
 
     a.exec();
