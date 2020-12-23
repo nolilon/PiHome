@@ -3,5 +3,6 @@
 
 const unsigned short wetherPort = 6000;
 const unsigned short alarmPort = 6001;
+const unsigned short lightPort = 6002;
 
 #endif // PORTS_H
