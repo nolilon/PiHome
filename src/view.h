@@ -26,6 +26,7 @@ private:
     TelegramInlineButton *const _temperatureButton;
     TelegramInlineButton *const _humidityButton;
     TelegramInlineButton *const _lightButton;
+    TelegramInlineButton *const _alarmButton;
 
     void update();
     QTimer _updateDelay;

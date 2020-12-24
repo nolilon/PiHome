@@ -17,7 +17,8 @@ View::View(Model &model, TelegramBot &bot)
       _telegramBot(bot),
       _temperatureButton( _keyboard.createButton( std::bind(&Model::tempOrHumidPressed, &_model) ) ),
       _humidityButton( _keyboard.createButton( std::bind(&Model::tempOrHumidPressed, &_model) ) ),
-      _lightButton( _keyboard.createButton( std::bind(&Model::toggleLight, &_model) ) )
+      _lightButton( _keyboard.createButton( std::bind(&Model::toggleLight, &_model) ) ),
+      _alarmButton( _keyboard.createButton( std::bind(&Model::stopAlarm, &_model) ) )
 {
     _model.setView(this);
     _telegramBot.subscribeOnReply(this);
@@ -41,7 +42,9 @@ void View::update()
     QString lightState;
     if (state.lightIsOn) lightState = "On";
     else lightState = "Off";
-    _lightButton->updateText( QString("   Light:             %1   ").arg(lightState) );
+    _lightButton->updateText( QString("   Light:                 %1   ").arg(lightState) );
+
+    _alarmButton->updateText( QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes) );
 
     TelegramComplexMessage message( textMessage, _keyboard );
     _telegramBot.updateMessage(message);
@@ -88,6 +91,14 @@ int View::acceptReply(const QString &reply)
             auto messageId = message["message_id"].toInt();
             auto chatId = message["chat"].toObject()["id"].toInt();
             _telegramBot.deleteMessage(chatId, messageId);
+
+            auto text = message["text"].toString();
+            auto command = text.section(' ',0,0);
+            if (command == "Alarm" || command == "alarm")
+            {
+                QTime time = QTime::fromString(text.section(' ',1,1),"h:mm");
+                if ( time.isValid() ) _model.setAlarmTime({time.hour(),time.minute()});
+            }
         }
 
         lastUpdateId = update_id;
