@@ -9,7 +9,7 @@ struct State
     double temperature = 101;
     double humidity = 101;
     bool lightIsOn = false;
-    Time alarmTime = {0,0};
+    Time alarmTime;
 };
 
 
