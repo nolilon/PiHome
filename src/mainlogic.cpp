@@ -4,10 +4,11 @@
 #include "device.h"
 
 
-MainLogic::MainLogic(Sensor *temperatureSensor, Sensor *humiditySensor, Device *light)
+MainLogic::MainLogic(Sensor *temperatureSensor, Sensor *humiditySensor, Device *light, Alarm *alarm)
     : _temperatureSensor(*temperatureSensor),
       _humiditySensor(*humiditySensor),
-      _light(*light)
+      _light(*light),
+      _alarm(*alarm)
 {
     _updateTimer.setInterval(600000);
     _updateTimer.start();
@@ -22,6 +23,7 @@ State MainLogic::currentState()
     result.temperature = _temperatureSensor.value();
     result.humidity = _humiditySensor.value();
     result.lightIsOn = _light.isOn();
+    result.alarmTime = _alarm.time();
     return result;
 }
 
@@ -34,4 +36,15 @@ void MainLogic::toggleLight()
 {
     _light.toggle();
     _view->modelUpdated();
+}
+
+void MainLogic::setAlarmTime(Time newTime)
+{
+    _alarm.setTime(newTime);
+    _view->modelUpdated();
+}
+
+void MainLogic::stopAlarm()
+{
+    _alarm.stop();
 }

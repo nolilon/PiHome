@@ -24,7 +24,8 @@ int main(int argc, char **argv)
 
     MainLogic logic(weather.tempSensor(),
                     weather.humidSensor(),
-                    &light);
+                    &light,
+                    &alarm);
     View view(logic, bot);
 
     a.exec();

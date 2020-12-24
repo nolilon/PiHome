@@ -2,12 +2,14 @@
 #define MODEL_H
 
 #include "iview.h"
+#include "ialarm.h"
 
 struct State
 {
     double temperature = 101;
     double humidity = 101;
     bool lightIsOn = false;
+    Time alarmTime = {0,0};
 };
 
 
@@ -18,6 +20,8 @@ public:
 
     virtual void tempOrHumidPressed() = 0;
     virtual void toggleLight() = 0;
+    virtual void setAlarmTime(Time newTime) = 0;
+    virtual void stopAlarm() = 0;
 
     virtual ~Model() {}
 
