@@ -5,6 +5,12 @@ struct Time
 {
     int hours = 0;
     int minutes = 0;
+
+    Time() {}
+    Time(int h, int m)
+        : hours(h),
+          minutes(m)
+    {}
 };
 
 class Alarm

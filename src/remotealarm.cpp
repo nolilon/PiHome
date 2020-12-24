@@ -24,10 +24,7 @@ void RemoteAlarm::setTime(Time newTime)
 
 Time RemoteAlarm::time() const
 {
-    Time ret;
-    ret.hours = _startTime.hour();
-    ret.minutes = _startTime.minute();
-    return ret;
+    return Time(_startTime.hour(),_startTime.minute());
 }
 
 bool RemoteAlarm::isConnected()

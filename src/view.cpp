@@ -97,7 +97,7 @@ int View::acceptReply(const QString &reply)
             if (command == "Alarm" || command == "alarm")
             {
                 QTime time = QTime::fromString(text.section(' ',1,1),"h:mm");
-                if ( time.isValid() ) _model.setAlarmTime({time.hour(),time.minute()});
+                if ( time.isValid() ) _model.setAlarmTime( Time(time.hour(),time.minute()) );
             }
         }
 
