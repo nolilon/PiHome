@@ -27,6 +27,11 @@ bool RemoteLight::isOn()
     return _isOn;
 }
 
+bool RemoteLight::isConnected()
+{
+    return _connection.isConnected();
+}
+
 void RemoteLight::sendState()
 {
     char command;

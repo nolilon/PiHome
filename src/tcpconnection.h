@@ -13,6 +13,8 @@ public:
     TcpConnection(unsigned short port, OnMessageCallback callback);
     void send(char *data, int size);
 
+    bool isConnected() const;
+
 private:
     void clientConnecting();
 

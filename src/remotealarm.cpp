@@ -29,7 +29,7 @@ Time RemoteAlarm::time() const
 
 bool RemoteAlarm::isConnected()
 {
-    return true;
+    return _connection.isConnected();
 }
 
 void RemoteAlarm::stop()

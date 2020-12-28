@@ -10,6 +10,11 @@ double RemoteTemperature::value()
     return _parent->_lastTemp;
 }
 
+bool RemoteTemperature::isConnected()
+{
+    return _parent->isConnected();
+}
+
 RemoteHumidit::RemoteHumidit(RemoteWeatherSensors *parent)
     : _parent(parent)
 {}
@@ -17,6 +22,11 @@ RemoteHumidit::RemoteHumidit(RemoteWeatherSensors *parent)
 double RemoteHumidit::value()
 {
     return _parent->_lastHumid;
+}
+
+bool RemoteHumidit::isConnected()
+{
+    return _parent->isConnected();
 }
 
 RemoteWeatherSensors::RemoteWeatherSensors(unsigned short port)
@@ -44,4 +54,9 @@ void RemoteWeatherSensors::messageReceived(char *data, int size)
 
     _lastTemp = (*temp)/10.;
     _lastHumid = (*humid)/10.;
+}
+
+bool RemoteWeatherSensors::isConnected() const
+{
+    return _connection.isConnected();
 }

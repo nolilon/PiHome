@@ -22,6 +22,11 @@ void TcpConnection::send(char *data, int size)
     _client->write(data,size);
 }
 
+bool TcpConnection::isConnected() const
+{
+    return _client != nullptr;
+}
+
 void TcpConnection::clientConnecting()
 {
     auto client = _tcpServer->nextPendingConnection();

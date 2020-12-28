@@ -12,6 +12,7 @@ public:
     RemoteTemperature(RemoteWeatherSensors *parent);
 
     double value() override;
+    bool isConnected() override;
 
 private:
     RemoteWeatherSensors *const _parent;
@@ -25,6 +26,7 @@ public:
     RemoteHumidit(RemoteWeatherSensors *parent);
 
     double value() override;
+    bool isConnected() override;
 
 private:
     RemoteWeatherSensors *const _parent;
@@ -53,6 +55,7 @@ private:
 
     TcpConnection _connection;
     void messageReceived(char *data, int size);
+    bool isConnected() const;
 };
 
 #endif // REMOTEWETHERSENSORS_H

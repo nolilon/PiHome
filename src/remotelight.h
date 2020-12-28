@@ -1,7 +1,7 @@
 #ifndef REMOTELIGHT_H
 #define REMOTELIGHT_H
 
-#include "device.h"
+#include "idevice.h"
 #include "tcpconnection.h"
 
 class RemoteLight : public Device
@@ -14,6 +14,7 @@ public:
     void toggle() override;
 
     bool isOn() override;
+    bool isConnected() override;
 
 private:
     TcpConnection _connection;
