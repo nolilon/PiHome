@@ -6,9 +6,16 @@
 
 struct State
 {
+    bool temperatureConnected = false;
     double temperature = 101;
+
+    bool humidityConnected = false;
     double humidity = 101;
+
+    bool lightConnected = false;
     bool lightIsOn = false;
+
+    bool alarmConnected = false;
     Time alarmTime;
 };
 

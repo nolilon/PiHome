@@ -18,12 +18,20 @@ MainLogic::MainLogic(Sensor *temperatureSensor, Sensor *humiditySensor, Device *
 State MainLogic::currentState()
 {
     _updateTimer.start();
-
     State result;
+
+    result.temperatureConnected = _temperatureSensor.isConnected();
     result.temperature = _temperatureSensor.value();
+
+    result.humidityConnected = _humiditySensor.isConnected();
     result.humidity = _humiditySensor.value();
+
+    result.lightConnected = _light.isConnected();
     result.lightIsOn = _light.isOn();
+
+    result.alarmConnected = _alarm.isConnected();
     result.alarmTime = _alarm.time();
+
     return result;
 }
 
