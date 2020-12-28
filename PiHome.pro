@@ -17,7 +17,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 
 HEADERS += \
     src/bottoken.h \
-    src/device.h \
+    src/idevice.h \
     src/ialarm.h \
     src/imodel.h \
     src/internet.h \

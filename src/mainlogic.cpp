@@ -1,7 +1,7 @@
 #include "mainlogic.h"
 
 #include "isensor.h"
-#include "device.h"
+#include "idevice.h"
 
 
 MainLogic::MainLogic(Sensor *temperatureSensor, Sensor *humiditySensor, Device *light, Alarm *alarm)
