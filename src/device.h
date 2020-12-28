@@ -10,6 +10,7 @@ public:
     virtual void toggle() = 0;
 
     virtual bool isOn() = 0;
+    virtual bool isConnected() = 0;
 
     virtual ~Device() {}
 };

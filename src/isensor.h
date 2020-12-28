@@ -6,6 +6,7 @@ class Sensor
 {
 public:
     virtual double value() = 0;
+    virtual bool isConnected() = 0;
 
     virtual ~Sensor() {}
 };
