@@ -19,7 +19,7 @@ void RemoteAlarm::setTime(Time newTime)
 {
     _startTime = QTime(newTime.hours, newTime.minutes);
     QSettings config(_alarmConfig, QSettings::IniFormat);
-    config.setValue("startTime", _startTime);
+    config.setValue("startTime", _startTime.toString());
 }
 
 Time RemoteAlarm::time() const
