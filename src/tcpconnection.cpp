@@ -10,7 +10,7 @@ TcpConnection::TcpConnection(quint16 port, OnMessageCallback callback)
       _tcpServer(new QTcpServer)
 {
     QObject::connect( _tcpServer, &QTcpServer::newConnection, [this]() {this->clientConnecting();} );
-    _tcpServer->listen(QHostAddress::Any, port);
+    _tcpServer->listen(QHostAddress::AnyIPv4, port);
     bool success = _tcpServer->isListening();
     if (success) qDebug() << "Listening port " << port << "\n";
     else qDebug() << "Port not opened!!";
