@@ -33,7 +33,7 @@ void TcpConnection::clientConnecting()
     if ( _client != nullptr ) delete _client;
     _client = client;
     QObject::connect( _client, &QTcpSocket::readyRead, [this]() {this->readMessage();} );
-    qDebug() << "Client connected on " << _client->peerPort() << " port";
+    qDebug() << "Client connected on " << _client->localPort() << " port";
 }
 
 void TcpConnection::readMessage()

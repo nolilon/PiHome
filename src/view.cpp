@@ -36,15 +36,26 @@ void View::update()
     auto currentDateTime = QDateTime::currentDateTime().toString("d MMMM yyyy, h:mm ap");
     TelegramMessage textMessage("Last update:\n" + currentDateTime, chat_id);
 
-    _temperatureButton->updateText( QString::asprintf("   Temperature:       %.1f   ", state.temperature) );
-    _humidityButton->updateText(    QString::asprintf("   Humidity:             %.1f   ", state.humidity) );
+    QString tempMessage;
+    if (state.temperatureConnected) tempMessage = QString::asprintf("   Temperature:       %.1f   ", state.temperature);
+    else tempMessage = "   Temperature:       n/c   ";
+    _temperatureButton->updateText( tempMessage );
+
+    QString humidMessage;
+    if (state.humidityConnected) humidMessage = QString::asprintf("   Humidity:             %.1f   ", state.humidity);
+    else humidMessage = "   Humidity:             n/c   ";
+        _humidityButton->updateText( humidMessage );
 
     QString lightState;
-    if (state.lightIsOn) lightState = "On";
+    if (!state.lightConnected) lightState = "n/c";
+    else if (state.lightIsOn) lightState = "On";
     else lightState = "Off";
-    _lightButton->updateText( QString("   Light:                 %1   ").arg(lightState) );
+    _lightButton->updateText( QString("   Light:                  %1   ").arg(lightState) );
 
-    _alarmButton->updateText( QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes) );
+    QString alarmMessage;
+    if (state.alarmConnected) alarmMessage = QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes);
+    else alarmMessage = "   Alarm:              n/c";
+    _alarmButton->updateText( alarmMessage );
 
     TelegramComplexMessage message( textMessage, _keyboard );
     _telegramBot.updateMessage(message);
