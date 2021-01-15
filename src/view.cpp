@@ -53,7 +53,7 @@ void View::update()
     _lightButton->updateText( QString("   Light:                  %1   ").arg(lightState) );
 
     QString alarmMessage;
-    if (state.alarmConnected) alarmMessage = QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes);
+    if (state.alarmConnected) alarmMessage = QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes, 2, 10, QChar('0'));
     else alarmMessage = "   Alarm:              n/c";
     _alarmButton->updateText( alarmMessage );
 
