@@ -3,17 +3,16 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QDebug>
+#include <QTimer>
 
 
 TcpConnection::TcpConnection(quint16 port, OnMessageCallback callback)
-    : _callback(callback),
+    : _port(port),
+      _callback(callback),
       _tcpServer(new QTcpServer)
 {
-    QObject::connect( _tcpServer, &QTcpServer::newConnection, [this]() {this->clientConnecting();} );
-    _tcpServer->listen(QHostAddress::AnyIPv4, port);
-    bool success = _tcpServer->isListening();
-    if (success) qDebug() << "Listening port " << port << "\n";
-    else qDebug() << "Port not opened!!";
+    QObject::connect( _tcpServer, &QTcpServer::acceptError, this, &TcpConnection::onError );
+    listenPort();
 }
 
 void TcpConnection::send(char *data, int size)
@@ -24,7 +23,21 @@ void TcpConnection::send(char *data, int size)
 
 bool TcpConnection::isConnected() const
 {
-    return _client != nullptr;
+    if ( _client == nullptr ) return false;
+    return _client->state() == QAbstractSocket::ConnectedState;
+}
+
+void TcpConnection::listenPort()
+{
+    QObject::connect( _tcpServer, &QTcpServer::newConnection, [this]() {this->clientConnecting();} );
+    _tcpServer->listen(QHostAddress::AnyIPv4, _port);
+    bool success = _tcpServer->isListening();
+    if (success) qDebug() << "Listening port " << _port << "\n";
+    else
+    {
+        qDebug() << "Port not opened!!";
+        QTimer::singleShot(30000, this, &TcpConnection::listenPort);
+    }
 }
 
 void TcpConnection::clientConnecting()
@@ -40,4 +53,9 @@ void TcpConnection::readMessage()
 {
     auto data = _client->readAll();
     _callback(data.data(), data.size());
+}
+
+void TcpConnection::onError()
+{
+    qDebug() << _tcpServer->errorString();
 }

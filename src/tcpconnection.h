@@ -1,6 +1,7 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
+#include <QIntegerForSize>
 #include <functional>
 typedef std::function<void(char *, int)> OnMessageCallback;
 
@@ -16,6 +17,8 @@ public:
     bool isConnected() const;
 
 private:
+    quint16 const _port;
+    void listenPort();
     void clientConnecting();
 
     void readMessage();
@@ -23,6 +26,8 @@ private:
 
     QTcpServer *const _tcpServer;
     QTcpSocket *_client = nullptr;
+
+    void onError();
 };
 
 #endif // TCPCONNECTION_H
