@@ -14,7 +14,6 @@ public:
     View(Model &model, TelegramBot &bot);
 
     void modelUpdated() override;
-    void alarm(QString message) override;
 
 private:
     Model &_model;

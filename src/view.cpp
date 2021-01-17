@@ -66,10 +66,6 @@ void View::modelUpdated()
     _updateDelay.start();
 }
 
-void View::alarm(QString message)
-{
-    Q_UNUSED(message)
-}
 
 
 //------------- CONTROLLER --------------//
