@@ -11,7 +11,7 @@ TcpConnection::TcpConnection(quint16 port, OnMessageCallback callback)
       _callback(callback),
       _tcpServer(new QTcpServer)
 {
-    QObject::connect( _tcpServer, &QTcpServer::acceptError, this, &TcpConnection::onError );
+    QObject::connect( _tcpServer, &QTcpServer::acceptError, [this] () {this->onError();} );
     listenPort();
 }
 
@@ -36,7 +36,7 @@ void TcpConnection::listenPort()
     else
     {
         qDebug() << "Port not opened!!";
-        QTimer::singleShot(30000, this, &TcpConnection::listenPort);
+        QTimer::singleShot(30000, [this] () {this->listenPort();});
     }
 }
 
