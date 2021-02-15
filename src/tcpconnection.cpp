@@ -11,7 +11,8 @@ TcpConnection::TcpConnection(quint16 port, OnMessageCallback callback)
       _callback(callback),
       _tcpServer(new QTcpServer)
 {
-    QObject::connect( _tcpServer, &QTcpServer::acceptError, [this] () {this->onError();} );
+    QObject::connect( _tcpServer, &QTcpServer::acceptError, [this] () {this->onServerError();} );
+    QObject::connect( _tcpServer, &QTcpServer::newConnection, [this]() {this->clientConnecting();} );
     listenPort();
 }
 
@@ -24,18 +25,20 @@ void TcpConnection::send(char *data, int size)
 bool TcpConnection::isConnected() const
 {
     if ( _client == nullptr ) return false;
-    return _client->state() == QAbstractSocket::ConnectedState;
+    auto state = _client->state() == QAbstractSocket::ConnectedState;
+    if (!state) qWarning() << "Client on port " << _port << " state: " << _client->state();
+    return state;
 }
 
 void TcpConnection::listenPort()
 {
-    QObject::connect( _tcpServer, &QTcpServer::newConnection, [this]() {this->clientConnecting();} );
+    qInfo() << "Trying to listen " << _port << " port";
     _tcpServer->listen(QHostAddress::AnyIPv4, _port);
     bool success = _tcpServer->isListening();
-    if (success) qDebug() << "Listening port " << _port << "\n";
+    if (success) qInfo() << "Listening port " << _port << "\n";
     else
     {
-        qDebug() << "Port not opened!!";
+        qWarning() << "Port is not opened!!";
         QTimer::singleShot(30000, [this] () {this->listenPort();});
     }
 }
@@ -43,10 +46,12 @@ void TcpConnection::listenPort()
 void TcpConnection::clientConnecting()
 {
     auto client = _tcpServer->nextPendingConnection();
+    if ( _tcpServer->hasPendingConnections() ) qWarning() << "Port " << _port << "still has pending connections!";
     if ( _client != nullptr ) delete _client;
     _client = client;
+    QObject::connect( _client, &QTcpSocket::errorOccurred, [this] () {this->onClientError();} );
     QObject::connect( _client, &QTcpSocket::readyRead, [this]() {this->readMessage();} );
-    qDebug() << "Client connected on " << _client->localPort() << " port";
+    qInfo() << "Client connected on " << _client->localPort() << " port from " << _client->localAddress();
 }
 
 void TcpConnection::readMessage()
@@ -55,7 +60,12 @@ void TcpConnection::readMessage()
     _callback(data.data(), data.size());
 }
 
-void TcpConnection::onError()
+void TcpConnection::onServerError()
 {
-    qDebug() << _tcpServer->errorString();
+    qWarning() << "Server on port " << _port << "has error: " << _tcpServer->errorString();
+}
+
+void TcpConnection::onClientError()
+{
+    qWarning() << "Client on port " << _port << "has error: " << _client->errorString();
 }

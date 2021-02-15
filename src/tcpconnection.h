@@ -27,7 +27,8 @@ private:
     QTcpServer *const _tcpServer;
     QTcpSocket *_client = nullptr;
 
-    void onError();
+    void onServerError();
+    void onClientError();
 };
 
 #endif // TCPCONNECTION_H
