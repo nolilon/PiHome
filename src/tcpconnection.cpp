@@ -53,7 +53,7 @@ void TcpConnection::clientConnecting()
     QObject::connect( _client, &QTcpSocket::errorOccurred, [this] () {this->onClientError();} );
 #endif
     QObject::connect( _client, &QTcpSocket::readyRead, [this]() {this->readMessage();} );
-    qInfo() << "Client connected on " << _client->localPort() << " port from " << _client->localAddress();
+    qInfo() << "Client connected on " << _client->localPort() << " port from " << _client->peerAddress().toString();
 }
 
 void TcpConnection::readMessage()
