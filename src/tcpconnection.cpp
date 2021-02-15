@@ -49,7 +49,9 @@ void TcpConnection::clientConnecting()
     if ( _tcpServer->hasPendingConnections() ) qWarning() << "Port " << _port << "still has pending connections!";
     if ( _client != nullptr ) delete _client;
     _client = client;
+#if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
     QObject::connect( _client, &QTcpSocket::errorOccurred, [this] () {this->onClientError();} );
+#endif
     QObject::connect( _client, &QTcpSocket::readyRead, [this]() {this->readMessage();} );
     qInfo() << "Client connected on " << _client->localPort() << " port from " << _client->localAddress();
 }
