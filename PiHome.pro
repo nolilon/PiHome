@@ -27,6 +27,7 @@ HEADERS += \
     src/ports.h \
     src/remotealarm.h \
     src/remotelight.h \
+    src/remotelightalarm.h \
     src/remotewethersensors.h \
     src/tcpconnection.h \
     src/telegrambot.h \
@@ -39,6 +40,7 @@ SOURCES += \
         src/mainlogic.cpp \
         src/remotealarm.cpp \
         src/remotelight.cpp \
+        src/remotelightalarm.cpp \
         src/remotewethersensors.cpp \
         src/tcpconnection.cpp \
         src/telegrambot.cpp \
