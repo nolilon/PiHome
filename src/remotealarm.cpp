@@ -60,4 +60,7 @@ void RemoteAlarm::timeCheck()
 }
 
 void RemoteAlarm::messageReceived(char *data, int size)
-{}
+{
+    Q_UNUSED(data)
+    Q_UNUSED(size)
+}
