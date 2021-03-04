@@ -5,8 +5,7 @@
 #include "ports.h"
 
 #include "remotewethersensors.h"
-#include "remotealarm.h"
-#include "remotelight.h"
+#include "remotelightalarm.h"
 
 #include <QCoreApplication>
 #include <QFile>
@@ -24,15 +23,14 @@ int main(int argc, char **argv)
     InternetPc internet;
 
     RemoteWeatherSensors weather(wetherPort);
-    RemoteAlarm alarm(alarmPort);
-    RemoteLight light(lightPort);
+    RemoteLightAlarm lightAlarm(alarmPort);
 
     TelegramBot bot(internet);
 
     MainLogic logic(weather.tempSensor(),
                     weather.humidSensor(),
-                    &light,
-                    &alarm);
+                    &lightAlarm,
+                    &lightAlarm);
     View view(logic, bot);
 
     a.exec();
