@@ -10,9 +10,11 @@ MainLogic::MainLogic(Sensor *temperatureSensor, Sensor *humiditySensor, Device *
       _light(*light),
       _alarm(*alarm)
 {
+    auto modelUpdated = [this] () {this->_view->modelUpdated();};
+    _alarm.setOnUpdated(modelUpdated);
     _updateTimer.setInterval(600000);
     _updateTimer.start();
-    QObject::connect( &_updateTimer, &QTimer::timeout, [this] () {this->_view->modelUpdated();} );
+    QObject::connect( &_updateTimer, &QTimer::timeout, modelUpdated );
 }
 
 State MainLogic::currentState()
@@ -43,13 +45,11 @@ void MainLogic::tempOrHumidPressed()
 void MainLogic::toggleLight()
 {
     _light.toggle();
-    _view->modelUpdated();
 }
 
 void MainLogic::setAlarmTime(Time newTime)
 {
     _alarm.setTime(newTime);
-    _view->modelUpdated();
 }
 
 void MainLogic::stopAlarm()
