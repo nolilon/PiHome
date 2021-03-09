@@ -1,7 +1,8 @@
 #ifndef IVOLATILE_H
 #define IVOLATILE_H
 
-typedef void (*OnUpdated)();
+#include <functional>
+typedef std::function<void()> OnUpdated;
 
 class IVolatile
 {
