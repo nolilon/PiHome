@@ -1,6 +1,8 @@
 #ifndef IALARM_H
 #define IALARM_H
 
+#include "ivolatile.h"
+
 struct Time
 {
     int hours = 0;
@@ -13,7 +15,7 @@ struct Time
     {}
 };
 
-class Alarm
+class Alarm : public IVolatile
 {
 public:
     virtual void setTime(Time newTime) = 0;

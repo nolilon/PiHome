@@ -1,6 +1,7 @@
 #include "remotelightalarm.h"
 
 #include <QSettings>
+#include <QDebug>
 
 RemoteLightAlarm::RemoteLightAlarm(unsigned short port)
     : _connection(port, [this] (char *data, int size) {this->messageReceived(data,size);} )
@@ -13,11 +14,17 @@ RemoteLightAlarm::RemoteLightAlarm(unsigned short port)
     _timer.start();
 }
 
+void RemoteLightAlarm::setOnUpdated(OnUpdated onUpdated)
+{
+    _onUpdated = onUpdated;
+}
+
 void RemoteLightAlarm::setTime(Time newTime)
 {
     _startTime = QTime(newTime.hours, newTime.minutes);
     QSettings config(_alarmConfig, QSettings::IniFormat);
     config.setValue("startTime", _startTime.toString());
+    updated();
 }
 
 Time RemoteLightAlarm::time() const
@@ -86,4 +93,14 @@ bool RemoteLightAlarm::isConnected()
 void RemoteLightAlarm::messageReceived(char *data, int size)
 {
     _isOn = data[size-1];
+    updated();
+}
+
+void RemoteLightAlarm::updated() const
+{
+#ifdef NDEBUG
+    if (_onUpdated == nullptr) qWarning() << "RemoteLightAlarm: onUpdated is nullptr!!";
+    else
+#endif
+        _onUpdated();
 }
