@@ -23,6 +23,7 @@ HEADERS += \
     src/internet.h \
     src/isensor.h \
     src/iview.h \
+    src/ivolatile.h \
     src/mainlogic.h \
     src/ports.h \
     src/remotealarm.h \
