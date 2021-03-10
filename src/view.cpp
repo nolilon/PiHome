@@ -45,8 +45,8 @@ void View::update()
     _humidityButton->updateText( humidMessage );
 
     QString lightMessage = QString("   Light:                  %1   ");
-    if (state.lightIsOn) lightMessage.arg( "On" );
-    else lightMessage.arg( "Off" );
+    if (state.lightIsOn) lightMessage = lightMessage.arg( "On" );
+    else lightMessage = lightMessage.arg( "Off" );
     if (!state.lightConnected) lightMessage = '-' + lightMessage;
     _lightButton->updateText( lightMessage );
 
