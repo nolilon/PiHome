@@ -36,25 +36,22 @@ void View::update()
     auto currentDateTime = QDateTime::currentDateTime().toString("d MMMM yyyy, h:mm ap");
     TelegramMessage textMessage("Last update:\n" + currentDateTime, chat_id);
 
-    QString tempMessage;
-    if (state.temperatureConnected) tempMessage = QString::asprintf("   Temperature:       %.1f   ", state.temperature);
-    else tempMessage = "   Temperature:       n/c   ";
+    QString tempMessage = QString::asprintf("   Temperature:       %.1f   ", state.temperature);
+    if (!state.temperatureConnected) tempMessage = '-' + tempMessage;
     _temperatureButton->updateText( tempMessage );
 
-    QString humidMessage;
-    if (state.humidityConnected) humidMessage = QString::asprintf("   Humidity:             %.1f   ", state.humidity);
-    else humidMessage = "   Humidity:             n/c   ";
-        _humidityButton->updateText( humidMessage );
+    QString humidMessage = QString::asprintf("   Humidity:             %.1f   ", state.humidity);
+    if (!state.humidityConnected) humidMessage = '-' + humidMessage;
+    _humidityButton->updateText( humidMessage );
 
-    QString lightState;
-    if (!state.lightConnected) lightState = "n/c";
-    else if (state.lightIsOn) lightState = "On";
-    else lightState = "Off";
-    _lightButton->updateText( QString("   Light:                  %1   ").arg(lightState) );
+    QString lightMessage = QString("   Light:                  %1   ");
+    if (state.lightIsOn) lightMessage.arg( "On" );
+    else lightMessage.arg( "Off" );
+    if (!state.lightConnected) lightMessage = '-' + lightMessage;
+    _lightButton->updateText( lightMessage );
 
-    QString alarmMessage;
-    if (state.alarmConnected) alarmMessage = QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes, 2, 10, QChar('0'));
-    else alarmMessage = "   Alarm:              n/c";
+    QString alarmMessage = QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes, 2, 10, QChar('0'));
+    if (!state.alarmConnected) alarmMessage = '-' + alarmMessage;
     _alarmButton->updateText( alarmMessage );
 
     TelegramComplexMessage message( textMessage, _keyboard );
