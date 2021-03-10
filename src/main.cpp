@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     InternetPc internet;
 
     RemoteWeatherSensors weather(wetherPort);
-    RemoteLightAlarm lightAlarm(alarmPort);
+    RemoteLightAlarm lightAlarm(lightAlarmPort);
 
     TelegramBot bot(internet);
 
