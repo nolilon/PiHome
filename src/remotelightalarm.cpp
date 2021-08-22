@@ -92,8 +92,9 @@ bool RemoteLightAlarm::isConnected()
 
 void RemoteLightAlarm::messageReceived(char *data, int size)
 {
+    auto oldStatus = _isOn;
     _isOn = data[size-1];
-    updated();
+    if (_isOn != oldStatus) updated();
 }
 
 void RemoteLightAlarm::updated() const
