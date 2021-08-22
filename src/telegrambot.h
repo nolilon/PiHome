@@ -17,7 +17,7 @@ public:
 
 
     void sendMesage(const TelegramObject &object);
-    void updateMessage(const TelegramObject &object);
+    void updateMessage(const TelegramObject &object, const QString &message_id);
     void deleteMessage(const QString &chat_id, const QString &message_id);
     void answerCallbackQuery(const QString &callbackQueryId);
 

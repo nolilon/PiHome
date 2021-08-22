@@ -55,7 +55,7 @@ void View::update()
     _alarmButton->updateText( alarmMessage );
 
     TelegramComplexMessage message( textMessage, _keyboard );
-    _telegramBot.updateMessage(message);
+    _telegramBot.updateMessage(message, "57");
 }
 
 void View::modelUpdated()

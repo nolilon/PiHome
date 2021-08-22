@@ -35,10 +35,10 @@ void TelegramBot::requestDone()
     else sendUpdatesRequest();
 }
 
-void TelegramBot::updateMessage(const TelegramObject &object)
+void TelegramBot::updateMessage(const TelegramObject &object, const QString &message_id)
 {
     const QString method = "/editMessageText?";
-    _importantRequestsQueue.push( _botApiUrl + _token + method + "message_id=57&" + object.json() );
+    _importantRequestsQueue.push( _botApiUrl + _token + method + "message_id=" + message_id + "&" + object.json() );
     sendImportantRequest();
 }
 
