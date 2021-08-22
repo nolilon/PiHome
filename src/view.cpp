@@ -92,16 +92,19 @@ int View::acceptReply(const QString &reply)
         else if ( updateJson.contains("message") )
         {
             auto message = updateJson["message"].toObject();
-            _telegramBot.deleteMessage(chatId, messageId);
-
-            auto text = message["text"].toString();
-            auto command = text.section(' ',0,0);
-            if (command == "Alarm" || command == "alarm")
             auto messageId = message["message_id"].toVariant().toString();
             auto chatId = message["chat"].toObject()["id"].toVariant().toString();
+            if (chatId == chat_id)
             {
-                QTime time = QTime::fromString(text.section(' ',1,1),"h:mm");
-                if ( time.isValid() ) _model.setAlarmTime( Time(time.hour(),time.minute()) );
+                _telegramBot.deleteMessage(chatId, messageId);
+
+                auto text = message["text"].toString();
+                auto command = text.section(' ',0,0);
+                if (command == "Alarm" || command == "alarm")
+                {
+                    QTime time = QTime::fromString(text.section(' ',1,1),"h:mm");
+                    if ( time.isValid() ) _model.setAlarmTime( Time(time.hour(),time.minute()) );
+                }
             }
         }
 
