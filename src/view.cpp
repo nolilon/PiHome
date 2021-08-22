@@ -92,13 +92,13 @@ int View::acceptReply(const QString &reply)
         else if ( updateJson.contains("message") )
         {
             auto message = updateJson["message"].toObject();
-            auto messageId = message["message_id"].toInt();
-            auto chatId = message["chat"].toObject()["id"].toInt();
             _telegramBot.deleteMessage(chatId, messageId);
 
             auto text = message["text"].toString();
             auto command = text.section(' ',0,0);
             if (command == "Alarm" || command == "alarm")
+            auto messageId = message["message_id"].toVariant().toString();
+            auto chatId = message["chat"].toObject()["id"].toVariant().toString();
             {
                 QTime time = QTime::fromString(text.section(' ',1,1),"h:mm");
                 if ( time.isValid() ) _model.setAlarmTime( Time(time.hour(),time.minute()) );

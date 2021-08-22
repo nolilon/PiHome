@@ -42,14 +42,14 @@ void TelegramBot::updateMessage(const TelegramObject &object)
     sendImportantRequest();
 }
 
-void TelegramBot::deleteMessage(int chat_id, int message_id)
+void TelegramBot::deleteMessage(const QString &chat_id, const QString &message_id)
 {
     const QString method = "/deleteMessage?";
     _importantRequestsQueue.push( _botApiUrl +
                                   _token +
                                   method +
-                                  "chat_id=" + QString::number(chat_id) +
-                                  "&message_id=" + QString::number(message_id ) );
+                                  "chat_id=" + chat_id +
+                                  "&message_id=" + message_id );
     sendImportantRequest();
 }
 
