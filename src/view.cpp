@@ -31,33 +31,39 @@ View::View(Model &model, TelegramBot &bot)
     _updateDelay.start();
 }
 
-void View::update()
+void View::update() const
 {
     auto state = _model.currentState();
 
     auto currentDateTime = QDateTime::currentDateTime().toString("d MMMM yyyy, h:mm ap");
-    TelegramMessage textMessage("Last update:\n" + currentDateTime, chat_id);
 
-    QString tempMessage = QString::asprintf("   Temperature:       %.1f   ", state.temperature);
-    if (!state.temperatureConnected) tempMessage = '-' + tempMessage;
-    _temperatureButton->updateText( tempMessage );
+    for (const auto &messageIds : _messagesToUpdate)
+    {
+        TelegramMessage textMessage("Last update:\n" + currentDateTime, messageIds.chat_id);
 
-    QString humidMessage = QString::asprintf("   Humidity:             %.1f   ", state.humidity);
-    if (!state.humidityConnected) humidMessage = '-' + humidMessage;
-    _humidityButton->updateText( humidMessage );
+        QString tempMessage = QString::asprintf("   Temperature:       %.1f   ", state.temperature);
+        if (!state.temperatureConnected) tempMessage = '-' + tempMessage;
+        _temperatureButton->updateText( tempMessage );
 
-    QString lightMessage = QString("   Light:                  %1   ");
-    if (state.lightIsOn) lightMessage = lightMessage.arg( "On" );
-    else lightMessage = lightMessage.arg( "Off" );
-    if (!state.lightConnected) lightMessage = '-' + lightMessage;
-    _lightButton->updateText( lightMessage );
+        QString humidMessage = QString::asprintf("   Humidity:             %.1f   ", state.humidity);
+        if (!state.humidityConnected) humidMessage = '-' + humidMessage;
+        _humidityButton->updateText( humidMessage );
 
-    QString alarmMessage = QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes, 2, 10, QChar('0'));
-    if (!state.alarmConnected) alarmMessage = '-' + alarmMessage;
-    _alarmButton->updateText( alarmMessage );
+        QString lightMessage = QString("   Light:                  %1   ");
+        if (state.lightIsOn) lightMessage = lightMessage.arg( "On" );
+        else lightMessage = lightMessage.arg( "Off" );
+        if (!state.lightConnected) lightMessage = '-' + lightMessage;
+        _lightButton->updateText( lightMessage );
 
-    TelegramComplexMessage message( textMessage, _keyboard );
-    _telegramBot.updateMessage(message, "57");
+        QString alarmMessage = QString("   Alarm:              %1:%2").arg(state.alarmTime.hours).arg(state.alarmTime.minutes, 2, 10, QChar('0'));
+        if (!state.alarmConnected) alarmMessage = '-' + alarmMessage;
+        _alarmButton->updateText( alarmMessage );
+
+        TelegramComplexMessage message( textMessage, _keyboard );
+
+        if (messageIds.message_id.isEmpty()) _telegramBot.sendMesage(message);
+        else _telegramBot.updateMessage(message, messageIds.message_id);
+    }
 }
 
 void View::modelUpdated()
@@ -67,6 +73,9 @@ void View::modelUpdated()
 
 void View::loadUpdatingMessages()
 {
+    _messagesToUpdate.clear();
+    _messageIdsLoaded = true;
+
     QSettings messages("updatingMessages.ini", QSettings::IniFormat);
     const auto groups = messages.childGroups();
     for (const auto &group : groups)
@@ -106,13 +115,21 @@ int View::acceptReply(const QString &reply)
 
             auto callbackQueryId = callback_query["id"].toString();
             _telegramBot.answerCallbackQuery(callbackQueryId);
+
+            if (_messageIdsLoaded)
+            {
+                auto message = callback_query["message"].toObject();
+                auto message_id = message["message_id"].toVariant().toString();
+                auto chat_id = message["chat"].toObject()["id"].toVariant().toString();
+                updateMessageId(chat_id, message_id);
+            }
         }
         else if ( updateJson.contains("message") )
         {
             auto message = updateJson["message"].toObject();
             auto messageId = message["message_id"].toVariant().toString();
             auto chatId = message["chat"].toObject()["id"].toVariant().toString();
-            if (chatId == chat_id)
+            if (knownChat(chatId))
             {
                 _telegramBot.deleteMessage(chatId, messageId);
 
@@ -131,4 +148,27 @@ int View::acceptReply(const QString &reply)
 //    elapsed = timer.nsecsElapsed();
 //    qDebug() << "Answer takes " << elapsed << "\n";
     return lastUpdateId;
+}
+
+bool View::knownChat(const QString &chatId) const
+{
+    for (auto &message : _messagesToUpdate)
+    {
+        if (message.chat_id == chatId) return true;
+    }
+    return false;
+}
+
+void View::updateMessageId(const QString &chatId, const QString &messageId)
+{
+    QSettings messages("updatingMessages.ini", QSettings::IniFormat);
+    const auto groups = messages.childGroups();
+    for (const auto &group : groups)
+    {
+        messages.beginGroup(group);
+        if (chatId == messages.value("chat_id").toString())
+            messages.setValue("message_id", messageId);
+        messages.endGroup();
+    }
+    loadUpdatingMessages();
 }

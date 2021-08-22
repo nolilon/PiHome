@@ -27,7 +27,6 @@ private:
     QList<UpdatingMessage> _messagesToUpdate;
     bool _messageIdsLoaded = true;
 
-    QString const chat_id = "420638906";
     TelegramInlineKeyboard _keyboard;
 
     TelegramInlineButton *const _temperatureButton;
@@ -36,11 +35,14 @@ private:
     TelegramInlineButton *const _alarmButton;
 
     void loadUpdatingMessages();
-    void update();
+
+    void update() const;
     QTimer _updateDelay;
 
     //CONTROLLER
     int acceptReply(const QString &reply) override;
+    bool knownChat(const QString &chatId) const;
+    void updateMessageId(const QString &chatId, const QString &messageId);
 };
 
 
