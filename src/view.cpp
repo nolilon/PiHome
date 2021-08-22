@@ -10,6 +10,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QDebug>
+#include <QSettings>
 
 
 View::View(Model &model, TelegramBot &bot)
@@ -22,6 +23,7 @@ View::View(Model &model, TelegramBot &bot)
 {
     _model.setView(this);
     _telegramBot.subscribeOnReply(this);
+    loadUpdatingMessages();
 
     _updateDelay.setSingleShot(true);
     _updateDelay.setInterval(10);
@@ -61,6 +63,22 @@ void View::update()
 void View::modelUpdated()
 {
     _updateDelay.start();
+}
+
+void View::loadUpdatingMessages()
+{
+    QSettings messages("updatingMessages.ini", QSettings::IniFormat);
+    const auto groups = messages.childGroups();
+    for (const auto &group : groups)
+    {
+        messages.beginGroup(group);
+        UpdatingMessage message;
+        message.chat_id = messages.value("chat_id").toString();
+        message.message_id = messages.value("message_id").toString();
+        messages.endGroup();
+        if (message.message_id.isEmpty()) _messageIdsLoaded = false;
+        _messagesToUpdate.append(message);
+    }
 }
 
 

@@ -7,6 +7,11 @@
 
 class Model;
 class TelegramBot;
+struct UpdatingMessage
+{
+    QString chat_id;
+    QString message_id;
+};
 
 class View : public IView, public TelegramController
 {
@@ -19,6 +24,9 @@ private:
     Model &_model;
     TelegramBot &_telegramBot;
 
+    QList<UpdatingMessage> _messagesToUpdate;
+    bool _messageIdsLoaded = true;
+
     QString const chat_id = "420638906";
     TelegramInlineKeyboard _keyboard;
 
@@ -27,6 +35,7 @@ private:
     TelegramInlineButton *const _lightButton;
     TelegramInlineButton *const _alarmButton;
 
+    void loadUpdatingMessages();
     void update();
     QTimer _updateDelay;
 
